@@ -6,10 +6,17 @@ This is the source code for the paper **"TitleGen-FL: Quality Prediction-based F
 
 To run this code, some packages are needed as following:
 ```
-opennmt-py >= 1.0.0
-pytorch >= 1.3.0
-nltk >= 3.4.5
+torch==1.5.1
+torchtext==0.6.0
+nltk==3.6.5
+gensim==3.8.3
+word2vec==0.9.4
+rouge==1.0.0
+venn==0.1.3
+pandas==1.0.1
+numpy==1.21.5
 ```
+and any other else used in project.
 
 ## How to prepare the dataset for TitleGen-FL
 
@@ -33,6 +40,10 @@ Third, run the Main.py and get final results in the folder: **"./result_last"**.
 Train new models
 First, follow the annotation, change the content in list "model_names" into the model name you want(we provide five choices: **'CNN', 'RNN', 'RCNN', 'RNN_Attention', 'Transformer'**), and change the first parameter of function **"DL_component_bleu_threshold"** to **'train'**.
 Second, run the **Main.py** and get final results in the folder: **"./result_last"**.
+
+## How long the code need to run
+We have introduced the CPU and GPU(RTX 3090) in our paper. In fact, under mine circumstance, it will cost about half to an hour to train a new model or about 10-15 mins to use a
+pretrained model and get result.
 
 ## Acknowledgements
 
