@@ -1,8 +1,6 @@
 from random import sample
-from Evaluator import evaluate_effectiveness_on_bleu, evaluate_effectiveness_on_rouge
 from IR_Component.IR_main import IR_component
 from new_DL import DL_component_bleu_threshold
-
 from utils.Evaluator import evaluate_effectiveness_and_save_result_in_xlsx
 from utils.tools import load_data, save_data, draw_venn
 from decimal import Decimal
@@ -41,20 +39,16 @@ if __name__ == '__main__':
     train_body, test_body, valid_body, train_title, test_title, valid_title, train_pred, test_pred, valid_pred = Input(train_body_path, test_body_path, valid_body_path, train_title_path, test_title_path, valid_title_path, train_pred_path, test_pred_path, valid_pred_path)
 
     # model_names = ['CNN', 'RNN', 'RCNN', 'RNN_Attention', 'Transformer']
-    model_names = ['RNN_Attention']
-    # model_names = ['Transformer']
+    model_names = ['Transformer']
     for model_name in model_names:
         DL_reserved_id = [int(id) for id in DL_component_bleu_threshold('train', model_name, train_body, train_title, train_pred, valid_body, valid_title, valid_pred, test_body, test_title)]
-        # DL_reserved_id = [int(id) for id in DL_component_bleu_threshold('use', model_name, train_body, train_title, train_pred, valid_body, valid_title, valid_pred, test_body, test_title)]
-        # DL_reserved_id = load_data(DL_reserved_id_save_path)
         DL_reserved_pred = [test_pred[int(id)] for id in DL_reserved_id]
         DL_reserved_title = [test_title[int(id)] for id in DL_reserved_id]
 
-        IR_reserved_id = [int(id) for id in load_data(IR_reserved_id_save_path)]
-        # train_plus_validation_body = [body for body in train_body]
-        # for body in valid_body:
-        #     train_plus_validation_body.append(body)
-        # IR_reserved_id = [int(id) for id in IR_component(train_body, test_body, test_title, test_pred)]
+        train_plus_validation_body = [body for body in train_body]
+        for body in valid_body:
+            train_plus_validation_body.append(body)
+        IR_reserved_id = [int(id) for id in IR_component(train_body, test_body, test_title, test_pred)]
         IR_reserved_pred = [test_pred[int(id)] for id in IR_reserved_id]
         IR_reserved_title = [test_title[int(id)] for id in IR_reserved_id]
 
@@ -74,7 +68,7 @@ if __name__ == '__main__':
         save_data(DL_reserved_title, save_path_DL_reserved_title)
         save_data(IR_reserved_title, save_path_IR_reserved_title)
 
-        # Evaluate effectiveness
+        # evaluate effectiveness and save result in xlsx
         evaluate_effectiveness_and_save_result_in_xlsx(model_name, test_body_path, test_title_path, test_pred_path,
                                                        DL_reserved_id, IR_reserved_id, save_path_DL_reserved_title,
                                                        save_path_DL_reserved_pred, save_path_IR_reserved_title,
@@ -83,8 +77,3 @@ if __name__ == '__main__':
 
         # draw venn graph of test set id reserved by DL and IR Component to show intersection of them
         draw_venn(DL_reserved_id, IR_reserved_id)
-
-        # evaluate effectiveness()
-        DL_reserved_rate, IR_reserved_rate = evaluate_effectiveness_on_bleu(DL_reserved_id, IR_reserved_id, test_title, test_pred)
-        # evaluate_effectiveness_on_rouge(DL_reserved_id, IR_reserved_id, test_title_path, test_pred_path, test_title, test_pred)
-
