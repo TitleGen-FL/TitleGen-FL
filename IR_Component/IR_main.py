@@ -139,36 +139,3 @@ def IR_component(train_body, test_body, test_title, test_pred):
     print("IR Component: best_threshold: {}, best_reserve_ratio: {}, best_bleu_total: {}".format(best_threshold, best_reserve_ratio,
                                                                                     best_total_bleu))
     return best_reserved_id
-
-
-# def Input(train_body_path, test_body_path, valid_body_path, train_title_path, test_title_path, valid_title_path, train_pred_path, test_pred_path, valid_pred_path):
-#     train_body = load_data(train_body_path); test_body = load_data(test_body_path); valid_body = load_data(valid_body_path)
-#     train_title = load_data(train_title_path); test_title = load_data(test_title_path); valid_title = load_data(valid_title_path)
-#     train_pred = load_data(train_pred_path); test_pred = load_data(test_pred_path); valid_pred = load_data(valid_pred_path)
-#     return train_body, test_body, valid_body, train_title, test_title, valid_title, train_pred, test_pred, valid_pred
-#
-#
-# if __name__ == '__main__':
-#     import torch
-#     print("CUDA is available: {}".format(torch.cuda.is_available()))
-#     # give paths
-#     train_body_path = "../iTAPE_dataset/body.train.txt"
-#     test_body_path = "../iTAPE_dataset/body.test.txt"
-#     valid_body_path = "../iTAPE_dataset/body.valid.txt"
-#     train_title_path = "../iTAPE_dataset/title.train.txt"
-#     test_title_path = "../iTAPE_dataset/title.test.txt"
-#     valid_title_path = "../iTAPE_dataset/title.valid.txt"
-#     train_pred_path = "../iTAPE_dataset/body.train.pred.txt"
-#     test_pred_path = "../iTAPE_dataset/body.test.pred.txt"
-#     valid_pred_path = "../iTAPE_dataset/body.valid.pred.txt"
-#
-#     # input data
-#     train_body, test_body, valid_body, train_title, test_title, valid_title, train_pred, test_pred, valid_pred = Input(train_body_path, test_body_path, valid_body_path, train_title_path, test_title_path, valid_title_path, train_pred_path, test_pred_path, valid_pred_path)
-#     train_plus_validation_body = [body for body in train_body]
-#     for body in valid_body:
-#         train_plus_validation_body.append(body)
-#     IR_reserved_id = [int(id) for id in IR_component(train_plus_validation_body, test_body, test_title, test_pred)]
-#     IR_reserved_id_save_path = "./IR_reserved_id.txt"
-#     save_data(IR_reserved_id, IR_reserved_id_save_path)
-#     IR_reserved_id_save_path = "../result_last/IR_reserved_id.txt"
-#     save_data(IR_reserved_id, IR_reserved_id_save_path)
