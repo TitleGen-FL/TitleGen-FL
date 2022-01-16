@@ -20,8 +20,8 @@ torch.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 
-"""生成深度学习模型训练用数据集部分2（进一步将pos和neg两个部分细分为train、test、valid三个数据集）"""
-"""Generating training data set part 2 for deep learning model (further subdivide pos and NEG into three data sets train, test and valid)"""
+"""生成深度学习模型训练用数据集（进一步将pos和neg两个部分细分为train、test、valid三个数据集）"""
+"""Generating training data set for deep learning model (further subdivide pos and NEG into three data sets train, test and valid)"""
 def gen_train_DL_model_dataset(file_dir):
     data_list = []
     all_csv_list = os.listdir(file_dir)
@@ -40,15 +40,15 @@ def gen_train_DL_model_dataset(file_dir):
                 data_list.append([sentence, label])
 
     random.shuffle(data_list)
-    # 将全部语料按1:1:8分为测试集，验证集与训练集
+    # 将全部语料按3:7分为验证集与训练集
+    # Split the data into valid set and trainging set as 3 : 7
     n = len(data_list) // 10
     dev_list = data_list[:n * 3]
     train_list = data_list[n * 3:]
     test_list = dev_list
 
-    print('训练集数量： {}'.format(str(len(train_list))))
-    # print('测试集数量： {}'.format(str(len(test_list))))
-    print('验证集数量： {}'.format(str(len(dev_list))))
+    print('Num of data in training set： {}'.format(str(len(train_list))))
+    print('Num of data in valid set： {}'.format(str(len(dev_list))))
     name = ['Sentence', 'Label']
     csv_train = pd.DataFrame(columns=name, data=train_list)
     csv_train.to_csv('dataset_train_DL_model/csv_train.csv', encoding='utf8', index=False)
@@ -56,10 +56,10 @@ def gen_train_DL_model_dataset(file_dir):
     csv_train.to_csv('dataset_train_DL_model/csv_test.csv', encoding='utf8', index=False)
     csv_train = pd.DataFrame(columns=name, data=dev_list)
     csv_train.to_csv('dataset_train_DL_model/csv_dev.csv', encoding='utf8', index=False)
-"""结束-生成深度学习模型训练用数据集部分2（进一步将pos和neg两个部分细分为train、test、valid三个数据集）"""
 
 
 """训练深度学习模型部分"""
+"""Train deep learning model"""
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
@@ -144,11 +144,7 @@ def train_model(train_iter, dev_iter, model, model_name, device):
             highest_valid_acc = accuracy / total_valid_num
             idx_acc_highest = epoch
             saveModel(model, model_name)
-        # if accuracy / total_valid_num < lowest_valid_acc:
-        #     lowest_valid_acc = accuracy / total_valid_num
-        #     saveModel(model,model_name)
         print('>>> Epoch_{}, Valid loss:{}, Accuracy:{} \n'.format(epoch, total_loss/total_valid_num, accuracy/total_valid_num))
-    # saveModel(model, model_name)
     print("Lowest_loss_epoch: {} Lowest_idx: {}".format(idx_loss_lowest, lowest_valid_loss))
     print("Highest_acc_epoch: {} Highest_idx: {}".format(idx_acc_highest, highest_valid_acc))
 
@@ -181,10 +177,10 @@ def train_DL_classify_model(model_name):
     train_model(train_iter, val_iter, model, model_name, device)
     # saveModel(model,model_name)
     test_model(test_iter, model, device)
-"""结束-训练深度学习模型部分"""
 
 
 """使用训练好的深度学习模型分类部分"""
+"""Use pretrained deep learning model to classify test set"""
 def getModel(model_name):
     model = torch.load('done_model/' + model_name + '_model.pkl')
     return model
@@ -211,7 +207,7 @@ def classify_test_dataset_use_trained_DL_model(model_name, wait_filtered_body, w
     filtered_body = []
     filtered_title = []
     reserved_id = []
-    for idx, sent in tqdm(enumerate(wait_filtered_body), desc='对测试集进行分类'):
+    for idx, sent in tqdm(enumerate(wait_filtered_body), desc='Classify the test set'):
         if predict_sentiment(model, sent) == 1:
             filtered_body.append(sent)
             filtered_title.append(wait_filtered_title[idx])
@@ -223,6 +219,7 @@ def DL_component_bleu_threshold(function_mode, model_name, train_body, train_tit
     if function_mode == 'train':
         print("DL module mode: Train new models.")
         # 训练数据初始化
+        # Initial the training data
         train_plus_val_body = [body for body in train_body]
         train_plus_val_title = [title for title in train_title]
         train_plus_val_pred = [pred for pred in train_pred]
@@ -233,6 +230,7 @@ def DL_component_bleu_threshold(function_mode, model_name, train_body, train_tit
         for pred in valid_pred:
             train_plus_val_pred.append(pred)
         # 训练数据标签化
+        # Label the training data
         body_0 = []
         title_0 = []
         body_1 = []
@@ -260,6 +258,7 @@ def DL_component_bleu_threshold(function_mode, model_name, train_body, train_tit
         print("Pos: {}, Neg：{}".format(len(body_1), len(body_0)))
 
         """准备train set对应深度学习模型所用数据集"""
+        """Prepare the data set for deep learning model train"""
         fp_pos = open('dataset_train_pos_neg/iTAPE_train_positive.csv', 'w', encoding='utf-8-sig', newline='')
         writer_pos = csv.writer(fp_pos)
         fp_neg = open('dataset_train_pos_neg/iTAPE_train_negative.csv', 'w', encoding='utf-8-sig', newline='')
@@ -273,15 +272,16 @@ def DL_component_bleu_threshold(function_mode, model_name, train_body, train_tit
 
         file_dir = "dataset_train_pos_neg/"
         gen_train_DL_model_dataset(file_dir)
-        #
-        # """使用训练集训练深度学习分类器"""
-        # model_names = ['CNN', 'RNN', 'RCNN', 'RNN_Attention', 'Transformer']
-        # model_names = ['Transformer']
+
+        """使用训练集训练深度学习分类器"""
+        """Train deep learning classifier use training set"""
         train_DL_classify_model(model_name)
     else:
         print("DL module mode: Use pretrained Models.")
         print(model_name)
+
     """使用验证集上训练出的最好模型去筛选测试集"""
+    """Use the best model trained on the valid set to classify the test set"""
     filtered_body, filtered_title, DL_Component_reserved_id = classify_test_dataset_use_trained_DL_model(
         model_name, test_body, test_title)
     return DL_Component_reserved_id
