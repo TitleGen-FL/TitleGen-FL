@@ -18,7 +18,7 @@ numpy==1.21.5
 ```
 and any other else used in project.
 
-**Notice:** before run Main.py, we recommend you download all files through this url： https://drive.google.com/drive/folders/1jTEfIY6V6f8HySQDCjWrP-3HxpuXdY5s?usp=sharing, which concludes all of files storage on google drive mentioned below. And, put them into this project's path.
+**Notice:** before run Main.py, you must first download these two folders: **dataset_train_DL_model** and **dataset_train_pos_neg** from the url: https://drive.google.com/drive/folders/1jTEfIY6V6f8HySQDCjWrP-3HxpuXdY5s?usp=sharing and put them in this project path, and we recommend you download all files through this url： https://drive.google.com/drive/folders/1jTEfIY6V6f8HySQDCjWrP-3HxpuXdY5s?usp=sharing, which concludes all of files storage on google drive mentioned below. And, put them into this project's path.
 
 ## How to prepare the dataset for TitleGen-FL
 
