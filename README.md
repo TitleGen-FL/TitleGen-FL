@@ -18,6 +18,8 @@ numpy==1.21.5
 ```
 and any other else used in project.
 
+**Notice:** before run Main.py, we recommend you download all files through this url： https://drive.google.com/drive/folders/1jTEfIY6V6f8HySQDCjWrP-3HxpuXdY5s?usp=sharing, which concludes all of files storage on google drive mentioned below.
+
 ## How to prepare the dataset for TitleGen-FL
 
 ### The iTAPE dataset(which is used in our paper and of course provided in this project)
