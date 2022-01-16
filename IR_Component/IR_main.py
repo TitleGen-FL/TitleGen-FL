@@ -78,10 +78,12 @@ def similarity(train_body, test_body, n=5):  # train_body：valid, test_body：t
 def IR_component(train_body, test_body, test_title, test_pred):
     print("——————————————————————————————————————————————————————————IR Component begin——————————————————————————————————————————————————————————")
     # 阈值初始化
+    # Initial the threshold
     thresholds = []
     for threshold in arange(0, 1, 0.05):
         thresholds.append(float(Decimal(threshold).quantize(Decimal("0.01"), rounding="ROUND_HALF_UP")))
     # 计算相似度
+    # Calculate similarities
     test_body_score = []
     n = 5000
     sim_cal_units = [test_body[i:i + n] for i in range(0, len(test_body), n)]
@@ -89,9 +91,11 @@ def IR_component(train_body, test_body, test_title, test_pred):
         for each_sim in similarity(train_body, sim_cal_unit):
             test_body_score.append(each_sim)
     # 结果存放容器初始化
+    # Initial the variables to storage result
     best_threshold = best_total_bleu = best_reserve_ratio = 0
     best_reserved_id = []
     # 选取最佳阈值
+    # Choose best threshold
     for threshold in thresholds:
         IR_reserved_id = []
         for idx, score in enumerate(test_body_score):  # 遍历所有test数据集中数据与valid数据集最相似body的bleu-4相似度
