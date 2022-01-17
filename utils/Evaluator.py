@@ -312,247 +312,247 @@ def evaluate_effectiveness_and_save_result_in_xlsx(model_name, test_body_path, t
     sheet1.append(IR)
     sheet1.append(tool)
 
-    human_study = load_workbook("Human Study for Filter.xlsx")
-    human_study_sheet = human_study["Human Study"]
-    DL_reserved_pred = load_data('./result_temp/DL_reserved_pred.txt')
-    IR_reserved_pred = load_data('./result_temp/IR_reserved_pred.txt')
+#     human_study = load_workbook("Human Study for Filter.xlsx")
+#     human_study_sheet = human_study["Human Study"]
+#     DL_reserved_pred = load_data('./result_temp/DL_reserved_pred.txt')
+#     IR_reserved_pred = load_data('./result_temp/IR_reserved_pred.txt')
 
-    # Body and pred
-    body = []
-    pred = []
-    # Score list
-    score = []
-    score_DL = []
-    score_IR = []
-    score_both = []
-    score_random = []
-    # How many
-    num_DL_res = 0
-    num_IR_res = 0
-    num_both_res = 0
-    # How many high or low quality
-    num_DL_high = 0
-    num_DL_low = 0
-    num_IR_high = 0
-    num_IR_low = 0
-    num_both_high = 0
-    num_both_low = 0
-    num_all_high = 0
-    num_all_low = 0
-    num_random_high = 0
-    num_random_low = 0
-    # Distribution of these scores
-    dis_all = {1:0, 2:0, 3:0, 4:0, 5:0}
-    dis_DL = {1:0, 2:0, 3:0, 4:0, 5:0}
-    dis_IR = {1:0, 2:0, 3:0, 4:0, 5:0}
-    dis_both = {1:0, 2:0, 3:0, 4:0, 5:0}
-    dis_random = {1:0, 2:0, 3:0, 4:0, 5:0}
-    # Sum of these scores
-    sum_all = 0
-    sum_DL = 0
-    sum_IR = 0
-    sum_both = 0
-    sum_random = 0
+#     # Body and pred
+#     body = []
+#     pred = []
+#     # Score list
+#     score = []
+#     score_DL = []
+#     score_IR = []
+#     score_both = []
+#     score_random = []
+#     # How many
+#     num_DL_res = 0
+#     num_IR_res = 0
+#     num_both_res = 0
+#     # How many high or low quality
+#     num_DL_high = 0
+#     num_DL_low = 0
+#     num_IR_high = 0
+#     num_IR_low = 0
+#     num_both_high = 0
+#     num_both_low = 0
+#     num_all_high = 0
+#     num_all_low = 0
+#     num_random_high = 0
+#     num_random_low = 0
+#     # Distribution of these scores
+#     dis_all = {1:0, 2:0, 3:0, 4:0, 5:0}
+#     dis_DL = {1:0, 2:0, 3:0, 4:0, 5:0}
+#     dis_IR = {1:0, 2:0, 3:0, 4:0, 5:0}
+#     dis_both = {1:0, 2:0, 3:0, 4:0, 5:0}
+#     dis_random = {1:0, 2:0, 3:0, 4:0, 5:0}
+#     # Sum of these scores
+#     sum_all = 0
+#     sum_DL = 0
+#     sum_IR = 0
+#     sum_both = 0
+#     sum_random = 0
 
-    for i in human_study_sheet["A"]:
-        if i.value == 'Body':
-            continue
-        else:
-            body.append(i.value)
-    for i in human_study_sheet["B"]:
-        if i.value == 'Pred':
-            continue
-        else:
-            pred.append(i.value)
-    for i in human_study_sheet["C"]:
-        if i.value == 'Score':
-            continue
-        else:
-            score.append(int(Decimal(i.value).quantize(Decimal("1"))))
+#     for i in human_study_sheet["A"]:
+#         if i.value == 'Body':
+#             continue
+#         else:
+#             body.append(i.value)
+#     for i in human_study_sheet["B"]:
+#         if i.value == 'Pred':
+#             continue
+#         else:
+#             pred.append(i.value)
+#     for i in human_study_sheet["C"]:
+#         if i.value == 'Score':
+#             continue
+#         else:
+#             score.append(int(Decimal(i.value).quantize(Decimal("1"))))
 
-    # total count, high and low quality count, distribution for all, DL, IR and both
-    for idx, unit_pred in enumerate(pred):
-        if unit_pred in DL_reserved_pred:
-            # get list
-            score_DL.append(score[idx])
-            # count total nums
-            num_DL_res += 1
-            # distribution
-            if score[idx] in dis_DL.keys():
-                dis_DL[score[idx]] += 1
-            else:
-                dis_DL[score[idx]] = 1
-            # count high and low quality nums
-            if score[idx] < 4 and score[idx] >= 0:
-                num_DL_low += 1
-            elif score[idx] >= 4 and score[idx] <= 5:
-                num_DL_high += 1
-            # calculate sum
-            sum_DL += score[idx]
-        if unit_pred in IR_reserved_pred:
-            # get list
-            score_IR.append(score[idx])
-            # count total nums
-            num_IR_res += 1
-            # distribution
-            if score[idx] in dis_IR.keys():
-                dis_IR[score[idx]] += 1
-            else:
-                dis_IR[score[idx]] = 1
-            # count high and low quality nums
-            if score[idx] < 4 and score[idx] >= 0:
-                num_IR_low += 1
-            elif score[idx] >= 4 and score[idx] <= 5:
-                num_IR_high += 1
-            # calculate sum
-            sum_IR += score[idx]
-        if unit_pred in DL_reserved_pred and unit_pred in IR_reserved_pred:
-            # get list
-            score_both.append(score[idx])
-            # count total nums
-            num_both_res += 1
-            # distribution
-            if score[idx] in dis_both.keys():
-                dis_both[score[idx]] += 1
-            else:
-                dis_both[score[idx]] = 1
-            # count high and low quality nums
-            if score[idx] < 4 and score[idx] >= 0:
-                num_both_low += 1
-            elif score[idx] >= 4 and score[idx] <= 5:
-                num_both_high += 1
-            # calculate sum
-            sum_both += score[idx]
-        # distribution
-        if score[idx] in dis_all.keys():
-            dis_all[score[idx]] += 1
-        else:
-            dis_all[score[idx]] = 1
-        # count high and low quality nums
-        if score[idx] < 4 and score[idx] >= 0:
-            num_all_low += 1
-        elif score[idx] >= 4 and score[idx] <= 5:
-            num_all_high += 1
-        # calculate sum
-        sum_all += score[idx]
+#     # total count, high and low quality count, distribution for all, DL, IR and both
+#     for idx, unit_pred in enumerate(pred):
+#         if unit_pred in DL_reserved_pred:
+#             # get list
+#             score_DL.append(score[idx])
+#             # count total nums
+#             num_DL_res += 1
+#             # distribution
+#             if score[idx] in dis_DL.keys():
+#                 dis_DL[score[idx]] += 1
+#             else:
+#                 dis_DL[score[idx]] = 1
+#             # count high and low quality nums
+#             if score[idx] < 4 and score[idx] >= 0:
+#                 num_DL_low += 1
+#             elif score[idx] >= 4 and score[idx] <= 5:
+#                 num_DL_high += 1
+#             # calculate sum
+#             sum_DL += score[idx]
+#         if unit_pred in IR_reserved_pred:
+#             # get list
+#             score_IR.append(score[idx])
+#             # count total nums
+#             num_IR_res += 1
+#             # distribution
+#             if score[idx] in dis_IR.keys():
+#                 dis_IR[score[idx]] += 1
+#             else:
+#                 dis_IR[score[idx]] = 1
+#             # count high and low quality nums
+#             if score[idx] < 4 and score[idx] >= 0:
+#                 num_IR_low += 1
+#             elif score[idx] >= 4 and score[idx] <= 5:
+#                 num_IR_high += 1
+#             # calculate sum
+#             sum_IR += score[idx]
+#         if unit_pred in DL_reserved_pred and unit_pred in IR_reserved_pred:
+#             # get list
+#             score_both.append(score[idx])
+#             # count total nums
+#             num_both_res += 1
+#             # distribution
+#             if score[idx] in dis_both.keys():
+#                 dis_both[score[idx]] += 1
+#             else:
+#                 dis_both[score[idx]] = 1
+#             # count high and low quality nums
+#             if score[idx] < 4 and score[idx] >= 0:
+#                 num_both_low += 1
+#             elif score[idx] >= 4 and score[idx] <= 5:
+#                 num_both_high += 1
+#             # calculate sum
+#             sum_both += score[idx]
+#         # distribution
+#         if score[idx] in dis_all.keys():
+#             dis_all[score[idx]] += 1
+#         else:
+#             dis_all[score[idx]] = 1
+#         # count high and low quality nums
+#         if score[idx] < 4 and score[idx] >= 0:
+#             num_all_low += 1
+#         elif score[idx] >= 4 and score[idx] <= 5:
+#             num_all_high += 1
+#         # calculate sum
+#         sum_all += score[idx]
 
-    # total count, high and low quality count, distribution for random
-    l = range(1, len(score) + 1)
-    choosed_number = sample(l, num_both_res)
-    for num in choosed_number:
-        # get list
-        score_random.append(score[num - 1])
-        # distribution
-        if score[num - 1] in dis_random.keys():
-            dis_random[score[num - 1]] += 1
-        else:
-            dis_random[score[num - 1]] = 1
-        # count high and low quality nums
-        if score[num - 1] < 4 and score[num - 1] >= 0:
-            num_random_low += 1
-        elif score[num - 1] >= 4 and score[num - 1] <= 5:
-            num_random_high += 1
-        # calculate sum
-        sum_random += score[num - 1]
+#     # total count, high and low quality count, distribution for random
+#     l = range(1, len(score) + 1)
+#     choosed_number = sample(l, num_both_res)
+#     for num in choosed_number:
+#         # get list
+#         score_random.append(score[num - 1])
+#         # distribution
+#         if score[num - 1] in dis_random.keys():
+#             dis_random[score[num - 1]] += 1
+#         else:
+#             dis_random[score[num - 1]] = 1
+#         # count high and low quality nums
+#         if score[num - 1] < 4 and score[num - 1] >= 0:
+#             num_random_low += 1
+#         elif score[num - 1] >= 4 and score[num - 1] <= 5:
+#             num_random_high += 1
+#         # calculate sum
+#         sum_random += score[num - 1]
 
-    # Table 5: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study
-    sheet1.merge_cells('A13:G13')
-    sheet1['A13'] = 'Table 5: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study'
-    row_title = ['Approach', '1', '2', '3', '4', '5', 'Preserved', 'Mean Score']
-    iTAPE = ['iTAPE', dis_all[1] / len(score), dis_all[2] / len(score), dis_all[3] / len(score), dis_all[4] / len(score),
-             dis_all[5] / len(score), len(score), sum_all / len(score)]
-    random = ['iTAPE+Random', dis_random[1] / num_both_res, dis_random[2] / num_both_res, dis_random[3] / num_both_res,
-              dis_random[4] / num_both_res, dis_random[5] / num_both_res, num_both_res, sum_random / num_both_res]
-    tool = ['iTAPE+tool', dis_both[1] / num_both_res, dis_both[2] / num_both_res, dis_both[3] / num_both_res,
-            dis_both[4] / num_both_res, dis_both[5] / num_both_res, num_both_res, sum_both / num_both_res]
-    sheet1.append(row_title)
-    sheet1.append(iTAPE)
-    sheet1.append(random)
-    sheet1.append(tool)
+#     # Table 5: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study
+#     sheet1.merge_cells('A13:G13')
+#     sheet1['A13'] = 'Table 5: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study'
+#     row_title = ['Approach', '1', '2', '3', '4', '5', 'Preserved', 'Mean Score']
+#     iTAPE = ['iTAPE', dis_all[1] / len(score), dis_all[2] / len(score), dis_all[3] / len(score), dis_all[4] / len(score),
+#              dis_all[5] / len(score), len(score), sum_all / len(score)]
+#     random = ['iTAPE+Random', dis_random[1] / num_both_res, dis_random[2] / num_both_res, dis_random[3] / num_both_res,
+#               dis_random[4] / num_both_res, dis_random[5] / num_both_res, num_both_res, sum_random / num_both_res]
+#     tool = ['iTAPE+tool', dis_both[1] / num_both_res, dis_both[2] / num_both_res, dis_both[3] / num_both_res,
+#             dis_both[4] / num_both_res, dis_both[5] / num_both_res, num_both_res, sum_both / num_both_res]
+#     sheet1.append(row_title)
+#     sheet1.append(iTAPE)
+#     sheet1.append(random)
+#     sheet1.append(tool)
 
-    TP_random = num_random_high
-    FP_random = num_random_low
-    FN_random = num_all_high - num_random_high
-    TN_random = num_all_low - num_random_low
-    TP_both = num_both_high
-    FP_both = num_both_low
-    FN_both = num_all_high - num_both_high
-    TN_both = num_all_low - num_both_low
-    TP_DL = num_DL_high
-    FP_DL = num_DL_low
-    FN_DL = num_all_high - num_DL_high
-    TN_DL = num_all_low - num_DL_low
-    TP_IR = num_IR_high
-    FP_IR = num_IR_low
-    FN_IR = num_all_high - num_IR_high
-    TN_IR = num_all_low - num_IR_low
+#     TP_random = num_random_high
+#     FP_random = num_random_low
+#     FN_random = num_all_high - num_random_high
+#     TN_random = num_all_low - num_random_low
+#     TP_both = num_both_high
+#     FP_both = num_both_low
+#     FN_both = num_all_high - num_both_high
+#     TN_both = num_all_low - num_both_low
+#     TP_DL = num_DL_high
+#     FP_DL = num_DL_low
+#     FN_DL = num_all_high - num_DL_high
+#     TN_DL = num_all_low - num_DL_low
+#     TP_IR = num_IR_high
+#     FP_IR = num_IR_low
+#     FN_IR = num_all_high - num_IR_high
+#     TN_IR = num_all_low - num_IR_low
 
-    precisionHT_random = TP_random / (TP_random + FP_random)
-    recallHT_random = TP_random / (TP_random + FN_random)
-    HT_F1_random = 2 * precisionHT_random * recallHT_random / (precisionHT_random + recallHT_random)
-    precisionHT_both = TP_both / (TP_both + FP_both)
-    recallHT_both = TP_both / (TP_both + FN_both)
-    HT_F1_both = 2 * precisionHT_both * recallHT_both / (precisionHT_both + recallHT_both)
-    precisionHT_DL = TP_DL / (TP_DL + FP_DL)
-    recallHT_DL = TP_DL / (TP_DL + FN_DL)
-    HT_F1_DL = 2 * precisionHT_DL * recallHT_DL / (precisionHT_DL + recallHT_DL)
-    precisionHT_IR = TP_IR / (TP_IR + FP_IR)
-    recallHT_IR = TP_IR / (TP_IR + FN_IR)
-    HT_F1_IR = 2 * precisionHT_IR * recallHT_IR / (precisionHT_IR + recallHT_IR)
+#     precisionHT_random = TP_random / (TP_random + FP_random)
+#     recallHT_random = TP_random / (TP_random + FN_random)
+#     HT_F1_random = 2 * precisionHT_random * recallHT_random / (precisionHT_random + recallHT_random)
+#     precisionHT_both = TP_both / (TP_both + FP_both)
+#     recallHT_both = TP_both / (TP_both + FN_both)
+#     HT_F1_both = 2 * precisionHT_both * recallHT_both / (precisionHT_both + recallHT_both)
+#     precisionHT_DL = TP_DL / (TP_DL + FP_DL)
+#     recallHT_DL = TP_DL / (TP_DL + FN_DL)
+#     HT_F1_DL = 2 * precisionHT_DL * recallHT_DL / (precisionHT_DL + recallHT_DL)
+#     precisionHT_IR = TP_IR / (TP_IR + FP_IR)
+#     recallHT_IR = TP_IR / (TP_IR + FN_IR)
+#     HT_F1_IR = 2 * precisionHT_IR * recallHT_IR / (precisionHT_IR + recallHT_IR)
 
-    precisionLT_random = TN_random / (TN_random + FN_random)
-    recallLT_random = TN_random / (TN_random + FP_random)
-    LT_F1_random = 2 * precisionLT_random * recallLT_random / (precisionLT_random + recallLT_random)
-    precisionLT_both = TN_both / (TN_both + FN_both)
-    recallLT_both = TN_both / (TN_both + FP_both)
-    LT_F1_both = 2 * precisionLT_both * recallLT_both / (precisionLT_both + recallLT_both)
-    precisionLT_DL = TN_DL / (TN_DL + FN_DL)
-    recallLT_DL = TN_DL / (TN_DL + FP_DL)
-    LT_F1_DL = 2 * precisionLT_DL * recallLT_DL / (precisionLT_DL + recallLT_DL)
-    precisionLT_IR = TN_IR / (TN_IR + FN_IR)
-    recallLT_IR = TN_IR / (TN_IR + FP_IR)
-    LT_F1_IR = 2 * precisionLT_IR * recallLT_IR / (precisionLT_IR + recallLT_IR)
+#     precisionLT_random = TN_random / (TN_random + FN_random)
+#     recallLT_random = TN_random / (TN_random + FP_random)
+#     LT_F1_random = 2 * precisionLT_random * recallLT_random / (precisionLT_random + recallLT_random)
+#     precisionLT_both = TN_both / (TN_both + FN_both)
+#     recallLT_both = TN_both / (TN_both + FP_both)
+#     LT_F1_both = 2 * precisionLT_both * recallLT_both / (precisionLT_both + recallLT_both)
+#     precisionLT_DL = TN_DL / (TN_DL + FN_DL)
+#     recallLT_DL = TN_DL / (TN_DL + FP_DL)
+#     LT_F1_DL = 2 * precisionLT_DL * recallLT_DL / (precisionLT_DL + recallLT_DL)
+#     precisionLT_IR = TN_IR / (TN_IR + FN_IR)
+#     recallLT_IR = TN_IR / (TN_IR + FP_IR)
+#     LT_F1_IR = 2 * precisionLT_IR * recallLT_IR / (precisionLT_IR + recallLT_IR)
 
-    # Table 6: Effectiveness of TitleGen-FL in terms precision, recall and F1 when applied to iTAPE  based on the human study
-    sheet1.merge_cells('A19:G19')
-    sheet1[
-        'A19'] = 'Table 6: Effectiveness of TitleGen-FL in terms precision, recall and F1 when applied to iTAPE based on the human study'
-    row_title = ['Approach', 'PrecisionHT', 'RecallHT', 'F1HT', '#HT', 'PrecisionLT', 'RecallLT', 'F1LT', '#LT']
-    random = ['iTAPE+Random', precisionHT_random, recallHT_random, HT_F1_random, num_both_res, precisionLT_random, recallLT_random, LT_F1_random, len(score) - num_both_res]
-    both = ['iTAPE+tool', precisionHT_both, recallHT_both, HT_F1_both, num_both_res, precisionLT_both, recallLT_both, LT_F1_both, len(score) - num_both_res]
-    sheet1.append(row_title)
-    sheet1.append(random)
-    sheet1.append(both)
+#     # Table 6: Effectiveness of TitleGen-FL in terms precision, recall and F1 when applied to iTAPE  based on the human study
+#     sheet1.merge_cells('A19:G19')
+#     sheet1[
+#         'A19'] = 'Table 6: Effectiveness of TitleGen-FL in terms precision, recall and F1 when applied to iTAPE based on the human study'
+#     row_title = ['Approach', 'PrecisionHT', 'RecallHT', 'F1HT', '#HT', 'PrecisionLT', 'RecallLT', 'F1LT', '#LT']
+#     random = ['iTAPE+Random', precisionHT_random, recallHT_random, HT_F1_random, num_both_res, precisionLT_random, recallLT_random, LT_F1_random, len(score) - num_both_res]
+#     both = ['iTAPE+tool', precisionHT_both, recallHT_both, HT_F1_both, num_both_res, precisionLT_both, recallLT_both, LT_F1_both, len(score) - num_both_res]
+#     sheet1.append(row_title)
+#     sheet1.append(random)
+#     sheet1.append(both)
 
-    # Table 7: Effectiveness of TitleGen-FL when applied to iTAPE based on the human stud
-    sheet1.merge_cells('A24:G24')
-    sheet1['A24'] = 'Table 7: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study'
-    row_title = ['Approach', '1', '2', '3', '4', '5', 'Preserved', 'Mean Score']
-    DL = ['iTAPE+DL', dis_DL[1] / num_DL_res, dis_DL[2] / num_DL_res, dis_DL[3] / num_DL_res, dis_DL[4] / num_DL_res,
-          dis_DL[5] / num_DL_res, num_DL_res, sum_DL / num_DL_res]
-    IR = ['iTAPE+IR', dis_IR[1] / num_IR_res, dis_IR[2] / num_IR_res, dis_IR[3] / num_IR_res, dis_IR[4] / num_IR_res,
-          dis_IR[5] / num_IR_res, num_IR_res, sum_IR / num_IR_res]
-    tool = ['iTAPE+tool', dis_both[1] / num_both_res, dis_both[2] / num_both_res, dis_both[3] / num_both_res,
-            dis_both[4] / num_both_res, dis_both[5] / num_both_res, num_both_res, sum_both / num_both_res]
-    sheet1.append(row_title)
-    sheet1.append(DL)
-    sheet1.append(IR)
-    sheet1.append(tool)
+#     # Table 7: Effectiveness of TitleGen-FL when applied to iTAPE based on the human stud
+#     sheet1.merge_cells('A24:G24')
+#     sheet1['A24'] = 'Table 7: Effectiveness of TitleGen-FL when applied to iTAPE based on the human study'
+#     row_title = ['Approach', '1', '2', '3', '4', '5', 'Preserved', 'Mean Score']
+#     DL = ['iTAPE+DL', dis_DL[1] / num_DL_res, dis_DL[2] / num_DL_res, dis_DL[3] / num_DL_res, dis_DL[4] / num_DL_res,
+#           dis_DL[5] / num_DL_res, num_DL_res, sum_DL / num_DL_res]
+#     IR = ['iTAPE+IR', dis_IR[1] / num_IR_res, dis_IR[2] / num_IR_res, dis_IR[3] / num_IR_res, dis_IR[4] / num_IR_res,
+#           dis_IR[5] / num_IR_res, num_IR_res, sum_IR / num_IR_res]
+#     tool = ['iTAPE+tool', dis_both[1] / num_both_res, dis_both[2] / num_both_res, dis_both[3] / num_both_res,
+#             dis_both[4] / num_both_res, dis_both[5] / num_both_res, num_both_res, sum_both / num_both_res]
+#     sheet1.append(row_title)
+#     sheet1.append(DL)
+#     sheet1.append(IR)
+#     sheet1.append(tool)
 
-    # Table 8: Effectiveness of TitleGen-FL in terms precision and recall when applied to iTAPE based on the human study
-    sheet1.merge_cells('A30:G30')
-    sheet1['A30'] = 'Table 8: Effectiveness of TitleGen-FL in terms precision and recall when applied to iTAPE based on the human study'
-    row_title = ['Approach', 'PrecisionHT', 'RecallHT', 'F1HT', '#HT', 'PrecisionLT', 'RecallLT', 'F1LT', '#LT']
-    DL = ['iTAPE+DL', precisionHT_DL, recallHT_DL, HT_F1_DL, num_DL_res, precisionLT_DL, recallLT_DL, LT_F1_DL,
-          len(score) - num_DL_res]
-    IR = ['iTAPE+IR', precisionHT_IR, recallHT_IR, HT_F1_IR, num_IR_res, precisionLT_IR, recallLT_IR, LT_F1_IR,
-          len(score) - num_IR_res]
-    both = ['iTAPE+tool', precisionHT_both, recallHT_both, HT_F1_both, num_both_res, precisionLT_both, recallLT_both,
-            LT_F1_both, len(score) - num_both_res]
-    sheet1.append(row_title)
-    sheet1.append(DL)
-    sheet1.append(IR)
-    sheet1.append(both)
+#     # Table 8: Effectiveness of TitleGen-FL in terms precision and recall when applied to iTAPE based on the human study
+#     sheet1.merge_cells('A30:G30')
+#     sheet1['A30'] = 'Table 8: Effectiveness of TitleGen-FL in terms precision and recall when applied to iTAPE based on the human study'
+#     row_title = ['Approach', 'PrecisionHT', 'RecallHT', 'F1HT', '#HT', 'PrecisionLT', 'RecallLT', 'F1LT', '#LT']
+#     DL = ['iTAPE+DL', precisionHT_DL, recallHT_DL, HT_F1_DL, num_DL_res, precisionLT_DL, recallLT_DL, LT_F1_DL,
+#           len(score) - num_DL_res]
+#     IR = ['iTAPE+IR', precisionHT_IR, recallHT_IR, HT_F1_IR, num_IR_res, precisionLT_IR, recallLT_IR, LT_F1_IR,
+#           len(score) - num_IR_res]
+#     both = ['iTAPE+tool', precisionHT_both, recallHT_both, HT_F1_both, num_both_res, precisionLT_both, recallLT_both,
+#             LT_F1_both, len(score) - num_both_res]
+#     sheet1.append(row_title)
+#     sheet1.append(DL)
+#     sheet1.append(IR)
+#     sheet1.append(both)
 
 
     result.save('./result_last/result_' + model_name + '.xlsx')
