@@ -41,8 +41,9 @@ And, read below instructions.
 
 ### Use our pretrained models
 First, copy the model .pkl file you want to use from the folder: **"./pre_trained_models"** and paste it into the folder: **"./TitleGen-FL/done_model"**.
-Second, follow the comments, change the content in list **"model_names"**, and comment out the first statement whose first parameter is **'train'**.
-Third, run the Main.py and get final results in the folder: **"./result_last"**.
+Second, If your dataset is iTAPE dataset(such as to reproduce the results of our paper), you need to make sure that the data sets in the **"dataset_train_DL_model"** and **"dataset_train_pos_neg"** folders are exactly the same as those in the corresponding folders in Google Drive.
+Third, follow the comments, change the content in list **"model_names"**, and comment out the first statement whose first parameter is **'train'**.
+Fourth, run the Main.py and get final results in the folder: **"./result_last"**.
 
 ### Train new models
 First, follow the comments, change the content in list "model_names" into the model name you want(we provide five choices: **'CNN', 'RNN', 'RCNN', 'RNN_Attention', 'Transformer'**), and not comment out the the first statement whose first parameter is **'train'**.
