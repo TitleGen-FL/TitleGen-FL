@@ -50,7 +50,7 @@ First, follow the comments, change the content in list "model_names" into the mo
 Second, run the **Main.py** and get final results in the folder: **"./TitleGen-FL/result_last"**.
 
 ## How long the code need to run
-We have introduced the CPU and GPU(RTX 3090) we used in our paper. In fact, under mine circumstance, for DL module, it will cost about 25-45 mins to train a new model or about 5-10 mins to use a pretrained model and get result. For IR module, it will cost at least 1h15min to get the result, to save your time, the IR module result also can find in this path: **"./IR component result"**, to use it, you only need to follow the comments and use the **load_data()** function in utils.tools.py.
+We have introduced the CPU and GPU(RTX 3090) we used in our paper. In fact, under mine circumstance, for DL module, it will cost about 8-15 mins to train a new model or about 5-10 mins to use a pretrained model and get result. For IR module, it will cost at least 1h15min to get the result, to save your time, the IR module result also can find in this path: **"./IR component result"**, to use it, you only need to follow the comments and use the **load_data()** function in utils.tools.py.
 
 ## Acknowledgements
 
